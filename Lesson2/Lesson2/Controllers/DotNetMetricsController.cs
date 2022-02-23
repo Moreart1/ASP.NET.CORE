@@ -19,7 +19,7 @@ namespace Lesson2.Controllers
 
         [HttpGet("cluster/errors-count/from{fromTime}/to{toTime}")]
         public IActionResult GetMetricsFromAllCluster(
-            [FromRoute] TimeSpan fromTime, 
+            [FromRoute] TimeSpan fromTime,
             [FromRoute] TimeSpan toTime)
         {
             return Ok();

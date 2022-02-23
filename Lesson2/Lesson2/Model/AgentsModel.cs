@@ -13,10 +13,10 @@ namespace Lesson2.Model
             _data = new List<AgentInfo>();
         }
 
-        public IReadOnlyList<AgentInfo>GetAgentsinfo()
+        public IReadOnlyList<AgentInfo> GetAgentsinfo()
         {
             return _data;
         }
-            
+
     }
 }

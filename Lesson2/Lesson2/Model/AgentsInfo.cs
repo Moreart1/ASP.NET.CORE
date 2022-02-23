@@ -5,8 +5,8 @@ namespace Lesson2.Model
 {
     public class AgentInfo
     {
-        public int AgentID { get;}
+        public int AgentID { get; }
 
-        public string AgentAdress { get;}
+        public string AgentAdress { get; }
     }
 }
