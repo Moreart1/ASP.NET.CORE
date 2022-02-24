@@ -8,9 +8,9 @@ namespace Lesson2.Controllers
     [ApiController]
     public class DotNetMetricsController : ControllerBase
     {
-        [HttpGet("agent{agentID}/errors-count/from{fromTime}/to{toTime}")]
+        [HttpGet("agent{agentId}/errors-count/from{fromTime}/to{toTime}")]
         public IActionResult GetMetricsFromAgent(
-            [FromRoute] int agentID,
+            [FromRoute] int agentId,
             [FromRoute] TimeSpan fromTime,
             [FromRoute] TimeSpan toTime)
         {

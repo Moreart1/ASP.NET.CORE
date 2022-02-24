@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using System;
 
 namespace Lesson2.Controllers
@@ -8,9 +7,9 @@ namespace Lesson2.Controllers
     [ApiController]
     public class NetworkMetricsController : ControllerBase
     {
-        [HttpGet("agent{agentID}/from{fromTime}/to{toTime}")]
+        [HttpGet("agent{agentId}/from{fromTime}/to{toTime}")]
         public IActionResult GetMetricsFromAgent(
-            [FromRoute] int agentID,
+            [FromRoute] int agentId,
             [FromRoute] TimeSpan fromTime,
             [FromRoute] TimeSpan toTime)
         {

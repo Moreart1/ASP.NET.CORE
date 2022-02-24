@@ -9,18 +9,18 @@ namespace Lesson2.Controllers
     [ApiController]
     public class CpuMetricsController : ControllerBase
     {
-        [HttpGet("agent/{agentID}/from{fromTime}/to{toTime}")]
+        [HttpGet("agent/{agentId}/from{fromTime}/to{toTime}")]
         public IActionResult GetMetricsFromAgent(
-            [FromRoute] int agentID,
+            [FromRoute] int agentId,
             [FromRoute] TimeSpan fromTime,
             [FromRoute] TimeSpan toTime)
         {
             return Ok();
         }
 
-        [HttpGet("agent/{agentID}/from{fromTime}/to{toTime}/percentiles{percentile}")]
+        [HttpGet("agent/{agentId}/from{fromTime}/to{toTime}/percentiles{percentile}")]
         public IActionResult GetMetricsByPercentileFromAgent(
-            [FromRoute] int agentID,
+            [FromRoute] int agentId,
             [FromRoute] TimeSpan fromTime,
             [FromRoute] TimeSpan toTime,
             [FromRoute] Percentile percentile)

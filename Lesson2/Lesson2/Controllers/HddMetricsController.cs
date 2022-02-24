@@ -7,8 +7,8 @@ namespace Lesson2.Controllers
     [ApiController]
     public class HddMetricsController : ControllerBase
     {
-        [HttpGet("agent{agentID}/left")]
-        public IActionResult GetMetricsFromAgent([FromRoute] int agentID)
+        [HttpGet("agent{agentId}/left")]
+        public IActionResult GetMetricsFromAgent([FromRoute] int agentId)
         {
             return Ok();
         }

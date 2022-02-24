@@ -1,7 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Lesson2.Model;
-
 
 namespace Lesson2.Controllers
 {
@@ -28,14 +26,14 @@ namespace Lesson2.Controllers
             return Ok();
         }
 
-        [HttpPut("enable/{agentID}")]
-        public IActionResult EnableAgentById([FromRoute] int agentID)
+        [HttpPut("enable/{agentId}")]
+        public IActionResult EnableAgentById([FromRoute] int agentId)
         {
             return Ok();
         }
 
-        [HttpPut("disable/{agentID}")]
-        public IActionResult DisableAgentById([FromRoute] int agentID)
+        [HttpPut("disable/{agentId}")]
+        public IActionResult DisableAgentById([FromRoute] int agentId)
         {
             return Ok();
         }
