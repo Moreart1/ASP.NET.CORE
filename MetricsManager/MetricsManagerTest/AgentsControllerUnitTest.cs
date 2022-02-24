@@ -7,66 +7,51 @@ namespace MetricsManagerTest
 {
     public class AgentsControllerUnitTests
     {
-        private readonly AgentsController _controller;
+        private AgentsController controller;
 
         public AgentsControllerUnitTests()
         {
-            var agentsModel = new AgentsModel();
-
-            _controller = new AgentsController(agentsModel);
+            controller = new AgentsController();
         }
 
         [Fact]
-        public void RegisterAgent_ReturnsOk()
+        public void RegisterAgent_ReturnOk()
         {
-            var agentInfo = new AgentInfo();
+            //Arrange
+            var agent = new AgentInfo();
 
-            var result = _controller.RegisterAgent(agentInfo);
+            //act
+            var result = controller.RegisterAgent(agent);
 
+            //Assert
             _ = Assert.IsAssignableFrom<IActionResult>(result);
         }
 
-
         [Fact]
-        public void UnregisterAgent_ReturnsOk()
+        public void EnableAgentById_ReturnOk()
         {
-            var agentInfo = new AgentInfo();
-
-            var result = _controller.UnregisterAgent(agentInfo);
-
-            _ = Assert.IsAssignableFrom<IActionResult>(result);
-        }
-
-
-        [Fact]
-        public void EnableAgentById_ReturnsOk()
-        {
+            //Arrange
             var agentId = 1;
 
-            var result = _controller.EnableAgentById(agentId);
+            //act
+            var result = controller.EnableAgentById(agentId);
 
+            //Assert
             _ = Assert.IsAssignableFrom<IActionResult>(result);
         }
 
-
         [Fact]
-        public void DisableAgentById_ReturnsOk()
+        public void DisableAgentById_ReturnOk()
         {
+            //Arrange
             var agentId = 1;
 
-            var result = _controller.DisableAgentById(agentId);
+            //act
+            var result = controller.DisableAgentById(agentId);
 
+            //Assert
             _ = Assert.IsAssignableFrom<IActionResult>(result);
         }
 
-
-        [Fact]
-        public void GetRegisterAgents_ReturnsOk()
-        {
-
-            var result = _controller.GetRegisterAgents();
-
-            _ = Assert.IsAssignableFrom<IActionResult>(result);
-        }
     }
 }

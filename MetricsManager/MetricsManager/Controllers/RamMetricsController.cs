@@ -1,5 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace MetricsManager.Controllers
 {
@@ -7,18 +11,38 @@ namespace MetricsManager.Controllers
     [ApiController]
     public class RamMetricsController : ControllerBase
     {
-        [HttpGet("agent/{agentId}/available")]
-        public IActionResult GetMetricsFromAgent(
-          [FromRoute] int agentId)
+        [HttpGet("available/from/{fromTime}/to/{toTime}")]
+        public IActionResult Available
+            (
+            [FromRoute] TimeSpan fromTime,
+            [FromRoute] TimeSpan toTime
+            )
         {
             return Ok();
         }
 
 
-        [HttpGet("cluster/available")]
-        public IActionResult GetMetricsFromAllCluster()
+        [HttpGet("agent/{agentId}/from/{fromTime}/to/{toTime}")]
+        public IActionResult GetMetricsFromAgent
+            (
+            [FromRoute] int agentId,
+            [FromRoute] TimeSpan fromTime,
+            [FromRoute] TimeSpan toTime
+            )
         {
             return Ok();
         }
+
+        [HttpGet("cluster/from/{fromTime}/to/{toTime}")]
+        public IActionResult GetMetricsFromAllCluster
+            (
+            [FromRoute] TimeSpan fromTime,
+            [FromRoute] TimeSpan toTime
+            )
+        {
+            return Ok();
+        }
+
+
     }
 }

@@ -11,30 +11,54 @@ namespace MetricsManagerTest
 {
     public class RamControllerUnitTests
     {
-        private readonly RamMetricsController _controller;
+        private RamMetricsController controller;
         public RamControllerUnitTests()
         {
-            _controller = new RamMetricsController();
+            controller = new RamMetricsController();
         }
 
+        [Fact]
+        public void Available_ReturnsOk()
+        {
+            //Arrange
+            var fromTime = TimeSpan.FromSeconds(0);
+            var toTime = TimeSpan.FromSeconds(100);
+
+            //act
+            var result = controller.Available(fromTime, toTime);
+
+            //Assert
+            _ = Assert.IsAssignableFrom<IActionResult>(result);
+        }
+
+        [Fact]
+        public void GetMetricsFromAllCluster_ReturnOk()
+        {
+            //Arrange
+            var fromTime = TimeSpan.FromSeconds(0);
+            var toTime = TimeSpan.FromSeconds(100);
+
+            //act
+            var result = controller.GetMetricsFromAllCluster(fromTime, toTime);
+
+            //Assert
+            _ = Assert.IsAssignableFrom<IActionResult>(result);
+        }
 
         [Fact]
         public void GetMetricsFromAgent_ReturnsOk()
         {
+            //Arrange
             var agentId = 1;
+            var fromTime = TimeSpan.FromSeconds(0);
+            var toTime = TimeSpan.FromSeconds(100);
 
-            var result = _controller.GetMetricsFromAgent(agentId);
+            //act
+            var result = controller.GetMetricsFromAgent(agentId, fromTime, toTime);
 
+            //Assert
             _ = Assert.IsAssignableFrom<IActionResult>(result);
         }
 
-
-        [Fact]
-        public void GetMetricsFromAllCluster_ReturnsOk()
-        {
-            var result = _controller.GetMetricsFromAllCluster();
-
-            _ = Assert.IsAssignableFrom<IActionResult>(result);
-        }
     }
 }
