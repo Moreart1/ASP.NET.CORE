@@ -1,4 +1,4 @@
-﻿using MetricsManager.Percentiles;
+﻿using ClassLibrary1;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
