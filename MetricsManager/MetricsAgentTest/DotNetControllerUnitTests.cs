@@ -1,5 +1,9 @@
 ﻿using MetricsAgent.Controllers;
+using MetricsAgent.Interface;
+using MetricsAgent.Repositories;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using Moq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,10 +16,12 @@ namespace MetricsAgentTest
     public class DotNetControllerUnitTests
     {
         private readonly DotNetMetricsController _controller;
+        private readonly Mock<DotNetMetricsRepository> _mock;
 
         public DotNetControllerUnitTests()
         {
-            _controller = new DotNetMetricsController();
+            _mock = new Mock<DotNetMetricsRepository>();
+            _controller = new DotNetMetricsController(new Mock<ILogger<DotNetMetricsController>>().Object, _mock.Object);
         }
 
 

@@ -22,7 +22,7 @@ namespace MetricsManager.Controllers
         [HttpGet("available/agent{agentId}")]
         public IActionResult Available([FromRoute] int agentId)          
         {
-            _logger.LogInformation($"Получение RAM у {agentId}",
+            _logger.LogInformation($"Получение RAM у \t {agentId}",
                agentId);
             return Ok();
         }
@@ -30,7 +30,7 @@ namespace MetricsManager.Controllers
         [HttpGet("available/cluster")]
         public IActionResult GetMetricsFromAllCluster()          
         {
-            _logger.LogInformation("Получение RAM");
+            _logger.LogInformation("Получение RAM со всех портов");
             return Ok();
         }
     }
