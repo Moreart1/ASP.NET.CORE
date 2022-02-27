@@ -1,10 +1,6 @@
 using ClassLibrary1;
 using MetricsAgent.Controllers;
-using MetricsAgent.Interface;
-using MetricsAgent.Repositories;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using Moq;
 using System;
 using Xunit;
 
@@ -12,18 +8,15 @@ namespace MetricsAgentTest
 {
     public class CpuControllerUnitTests
     {
-
         private readonly CpuMetricsController _controller;
-        private readonly Mock<CpuMetricsRepository> _mock;
 
         public CpuControllerUnitTests()
         {
-            _mock = new Mock<CpuMetricsRepository>();
-            _controller = new CpuMetricsController(new Mock<ILogger<CpuMetricsController>>().Object, _mock.Object);
+            _controller = new CpuMetricsController();
         }
 
         [Fact]
-        public void GetMetricsFromAgent_ReturnsOk()
+        public void GetMetrics_ReturnsOk()
         {
             var fromTime = TimeSpan.FromSeconds(0);
             var toTime = TimeSpan.FromSeconds(100);

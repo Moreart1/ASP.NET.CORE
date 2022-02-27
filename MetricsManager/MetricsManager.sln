@@ -5,13 +5,13 @@ VisualStudioVersion = 17.1.32210.238
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MetricsManager", "MetricsManager\MetricsManager.csproj", "{118E509D-44AC-4E0C-83FA-969386F0CE91}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MetricsManagerTest", "MetricsManagerTest\MetricsManagerTest.csproj", "{299060C6-0E84-4160-B914-45B045C6C346}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MetricsManagerTest", "MetricsManagerTest\MetricsManagerTest.csproj", "{299060C6-0E84-4160-B914-45B045C6C346}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Enum", "ClassLibrary1\Enum.csproj", "{9B611A01-F845-4F89-BE92-89ED46D212C1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Enum", "ClassLibrary1\Enum.csproj", "{9B611A01-F845-4F89-BE92-89ED46D212C1}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MetricsAgent", "MetricsAgent\MetricsAgent.csproj", "{BA35A3EC-9CC2-455D-AAFB-5541B23CC174}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MetricsAgent", "MetricsAgent\MetricsAgent.csproj", "{BA35A3EC-9CC2-455D-AAFB-5541B23CC174}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MetricsAgentTest", "MetricsAgentTest\MetricsAgentTest.csproj", "{A1353BF1-F087-4C0D-9D63-117FA0FDAFFA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MetricsAgentTest", "MetricsAgentTest\MetricsAgentTest.csproj", "{A1353BF1-F087-4C0D-9D63-117FA0FDAFFA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

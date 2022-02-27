@@ -26,7 +26,7 @@ namespace MetricsManager.Controllers
             [FromRoute] TimeSpan toTime
             )
         {
-            _logger.LogInformation($"Получение количества ошибок за период: {fromTime},\t {toTime} от {agentId}",
+            _logger.LogInformation($"Получение количества ошибок за период: {fromTime}, {toTime} от {agentId}",
                 agentId,
                 fromTime.ToString(),
                 toTime.ToString());
@@ -41,7 +41,7 @@ namespace MetricsManager.Controllers
             [FromRoute] TimeSpan toTime
             )
         {
-            _logger.LogInformation($"Получение количества ошибок за период: {fromTime}, \t {toTime} всего кластера",
+            _logger.LogInformation($"Получение количества ошибок за период: {fromTime}, {toTime}",
                 fromTime.ToString(),
                 toTime.ToString());
             return Ok();
