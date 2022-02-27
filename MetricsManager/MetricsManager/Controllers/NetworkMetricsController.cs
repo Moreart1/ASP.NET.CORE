@@ -27,7 +27,7 @@ namespace MetricsManager.Controllers
             [FromRoute] TimeSpan toTime
             )
         {
-            _logger.LogInformation($"Получение метрик за период: {fromTime}, {toTime} от {agentId}",
+            _logger.LogInformation($"Получение метрик за период: {fromTime}, \t {toTime} от {agentId}",
                 fromTime.ToString(),
                 toTime.ToString(),
                 agentId);
@@ -41,7 +41,7 @@ namespace MetricsManager.Controllers
             [FromRoute] TimeSpan toTime
             )
         {
-            _logger.LogInformation($"Получение метрик за период: {fromTime}, {toTime}",
+            _logger.LogInformation($"Получение метрик за период: {fromTime}, \t {toTime}",
                 fromTime.ToString(),
                 toTime.ToString());
             return Ok();
