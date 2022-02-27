@@ -2,7 +2,7 @@
 
 namespace MetricsAgent.Interface
 {
-    public interface IRamMetricsRepository:IRepository<RamMetric>
+    public interface IRamMetricsRepository : IRepository<RamMetric>
     {
     }
 }

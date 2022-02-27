@@ -29,11 +29,17 @@ namespace MetricsAgent
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "MetricsManager", 
+                c.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Title = "MetricsManager",
                     Description = "Отслеживает состояние параметров системы",
-                    Contact = new OpenApiContact {Name = "Денисенко Марк", 
-                    Email = "Morearti1726263@yandex.ru"},                  
-                    Version = "v1" });
+                    Contact = new OpenApiContact
+                    {
+                        Name = "Денисенко Марк",
+                        Email = "Morearti1726263@yandex.ru"
+                    },
+                    Version = "v1"
+                });
             });
         }
 
@@ -54,8 +60,8 @@ namespace MetricsAgent
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
-            
+
         }
-        
+
     }
 }

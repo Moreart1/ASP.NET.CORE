@@ -38,12 +38,12 @@ namespace MetricsManagerTest
 
         [Fact]
         public void GetMetricsFromAllCluster_ReturnOk()
-        {          
+        {
             //act
             var result = controller.GetMetricsFromAllCluster();
 
             //Assert
             _ = Assert.IsAssignableFrom<IActionResult>(result);
-        }       
+        }
     }
 }

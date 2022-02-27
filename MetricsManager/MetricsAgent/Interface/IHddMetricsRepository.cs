@@ -2,7 +2,7 @@
 
 namespace MetricsAgent.Interface
 {
-    public interface IHddMetricsRepository:IRepository<HddMetric>
+    public interface IHddMetricsRepository : IRepository<HddMetric>
     {
     }
 }

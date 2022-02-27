@@ -32,7 +32,7 @@ namespace MetricsManagerTest
             var toTime = TimeSpan.FromSeconds(100);
 
             //act
-            var result = controller.ErrorsCount(agentId,fromTime, toTime);
+            var result = controller.ErrorsCount(agentId, fromTime, toTime);
 
             //Assert
             _ = Assert.IsAssignableFrom<IActionResult>(result);
@@ -50,6 +50,6 @@ namespace MetricsManagerTest
 
             //Assert
             _ = Assert.IsAssignableFrom<IActionResult>(result);
-        }             
+        }
     }
 }

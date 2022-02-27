@@ -23,7 +23,7 @@ namespace MetricsManagerTest
             mockLogger = new Mock<ILogger<CpuMetricsController>>();
             controller = new CpuMetricsController(mockLogger.Object);
         }
-      
+
 
         [Fact]
         public void GetMetricsFromAllCluster_ReturnOk()

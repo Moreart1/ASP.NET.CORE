@@ -2,7 +2,7 @@
 
 namespace MetricsAgent.Interface
 {
-    public interface INetworkMetricsRepository:IRepository<NetworkMetric>
+    public interface INetworkMetricsRepository : IRepository<NetworkMetric>
     {
     }
 }

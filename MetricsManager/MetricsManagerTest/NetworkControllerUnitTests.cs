@@ -14,7 +14,7 @@ namespace MetricsManagerTest
     public class NetworkControllerUnitTests
     {
         private NetworkMetricsController controller;
-        
+
         private Mock<ILogger<NetworkMetricsController>> mockLogger;
 
         public NetworkControllerUnitTests()

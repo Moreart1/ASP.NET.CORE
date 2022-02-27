@@ -20,7 +20,7 @@ namespace MetricsManager.Controllers
         }
 
         [HttpGet("available/agent{agentId}")]
-        public IActionResult Available([FromRoute] int agentId)          
+        public IActionResult Available([FromRoute] int agentId)
         {
             _logger.LogInformation($"Получение RAM у \t {agentId}",
                agentId);
@@ -28,7 +28,7 @@ namespace MetricsManager.Controllers
         }
 
         [HttpGet("available/cluster")]
-        public IActionResult GetMetricsFromAllCluster()          
+        public IActionResult GetMetricsFromAllCluster()
         {
             _logger.LogInformation("Получение RAM со всех портов");
             return Ok();

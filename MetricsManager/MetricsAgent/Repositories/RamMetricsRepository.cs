@@ -4,7 +4,7 @@ using System.Data.SQLite;
 
 namespace MetricsAgent.Repositories
 {
-    public class RamMetricsRepository:IRamMetricsRepository
+    public class RamMetricsRepository : IRamMetricsRepository
     {
         private const string ConnectionString = "Data Source=metrics.db;Version=3;Pooling=true;Max Pool Size=100;";
         // инжектируем соединение с базой данных в наш репозиторий через конструктор
