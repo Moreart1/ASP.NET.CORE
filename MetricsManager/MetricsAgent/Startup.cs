@@ -1,4 +1,8 @@
-﻿using Microsoft.OpenApi.Models;
+﻿using MetricsAgent.Interface;
+using MetricsAgent.Repositories;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.OpenApi.Models;
+using System.Data.SQLite;
 
 namespace MetricsAgent
 {
@@ -15,9 +19,21 @@ namespace MetricsAgent
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            services.AddControllersWithViews();
+            services.AddSingleton<ICpuMetricsRepository, CpuMetricsRepository>();
+            services.AddSingleton<IDotNetMetricsRepository, DotNetMetricsRepository>();
+            services.AddSingleton<IHddMetricsRepository, HddMetricsRepository>();
+            services.AddSingleton<INetworkMetricsRepository, NetworkMetricsRepository>();
+            services.AddSingleton<IRamMetricsRepository, RamMetricsRepository>();
+            services.AddControllers();
+            services.AddEndpointsApiExplorer();
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "MetricsAgent", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "MetricsManager", 
+                    Description = "Отслеживает состояние параметров системы",
+                    Contact = new OpenApiContact {Name = "Денисенко Марк", 
+                    Email = "Morearti1726263@yandex.ru"},                  
+                    Version = "v1" });
             });
         }
 
@@ -38,6 +54,8 @@ namespace MetricsAgent
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
+            
         }
+        
     }
 }
