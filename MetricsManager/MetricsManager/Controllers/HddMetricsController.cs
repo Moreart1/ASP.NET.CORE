@@ -22,7 +22,7 @@ namespace MetricsManager.Controllers
         [HttpGet("left/agent/{agentId}")]
         public IActionResult Left([FromRoute] int agentId)                             
         {
-            _logger.LogInformation($"Получение свободного места на HDD у  \t {agentId}",
+            _logger.LogInformation($"Получение свободного места на HDD у {agentId}",
                agentId);
             return Ok();
         }
@@ -30,7 +30,7 @@ namespace MetricsManager.Controllers
         [HttpGet("left/cluster")]
         public IActionResult GetMetricsFromAllCluster()           
         {
-            _logger.LogInformation("Получение свободного места на всех HDD");
+            _logger.LogInformation("Получение свободного места на HDD");
             return Ok();
         }
 
