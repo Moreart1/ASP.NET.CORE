@@ -11,6 +11,14 @@ namespace MetricsManager.Controllers
     [ApiController]
     public class NetworkMetricsController : ControllerBase
     {
+        private readonly ILogger<NetworkMetricsController> _logger;
+
+        public NetworkMetricsController(ILogger<NetworkMetricsController> logger)
+        {
+            _logger = logger;
+            _logger.LogDebug(1, "NLog встроен в CpuMetricsController");
+        }
+
         [HttpGet("agent/{agentId}/from/{fromTime}/to/{toTime}")]
         public IActionResult GetMetricsFromAgent
             (
@@ -19,6 +27,10 @@ namespace MetricsManager.Controllers
             [FromRoute] TimeSpan toTime
             )
         {
+            _logger.LogInformation($"Получение метрик за период: {fromTime}, {toTime} от {agentId}",
+                fromTime.ToString(),
+                toTime.ToString(),
+                agentId);
             return Ok();
         }
 
@@ -29,6 +41,9 @@ namespace MetricsManager.Controllers
             [FromRoute] TimeSpan toTime
             )
         {
+            _logger.LogInformation($"Получение метрик за период: {fromTime}, {toTime}",
+                fromTime.ToString(),
+                toTime.ToString());
             return Ok();
         }
     }

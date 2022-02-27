@@ -1,6 +1,8 @@
 using MetricsManager.Controllers;
 using MetricsManager.Model;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using Moq;
 using Xunit;
 
 namespace MetricsManagerTest
@@ -9,9 +11,11 @@ namespace MetricsManagerTest
     {
         private AgentsController controller;
 
+        private Mock<ILogger<AgentsController>> mockLogger;
         public AgentsControllerUnitTests()
         {
-            controller = new AgentsController();
+            mockLogger = new Mock<ILogger<AgentsController>>();
+            controller = new AgentsController(mockLogger.Object);
         }
 
         [Fact]
@@ -51,6 +55,14 @@ namespace MetricsManagerTest
 
             //Assert
             _ = Assert.IsAssignableFrom<IActionResult>(result);
+        }
+
+        [Fact]
+        public void GetRegisterMetrics_ReturnsOk()
+        {
+            var result = controller.GetRegisterAgents();
+
+            Assert.Null(result);
         }
 
     }

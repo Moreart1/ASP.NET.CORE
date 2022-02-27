@@ -11,35 +11,39 @@ namespace MetricsManager.Controllers
     [ApiController]
     public class DotNetMetricsController : ControllerBase
     {
+        private readonly ILogger<DotNetMetricsController> _logger;
 
-        [HttpGet("errorscount/from/{fromTime}/to/{toTime}")]
+        public DotNetMetricsController(ILogger<DotNetMetricsController> logger)
+        {
+            _logger = logger;
+            _logger.LogDebug(1, "NLog встроен в CpuMetricsController");
+        }
+
+        [HttpGet("errors-count/agent/{agentId}/from/{fromTime}/to/{toTime}")]
         public IActionResult ErrorsCount
-            (
+            ([FromRoute] int agentId,
             [FromRoute] TimeSpan fromTime,
             [FromRoute] TimeSpan toTime
             )
         {
+            _logger.LogInformation($"Получение количества ошибок за период: {fromTime}, {toTime} от {agentId}",
+                agentId,
+                fromTime.ToString(),
+                toTime.ToString());
             return Ok();
         }
 
-        [HttpGet("agent/{agentId}/from/{fromTime}/to/{toTime}")]
-        public IActionResult GetMetricsFromAgent
-            (
-            [FromRoute] int agentId,
-            [FromRoute] TimeSpan fromTime,
-            [FromRoute] TimeSpan toTime
-            )
-        {
-            return Ok();
-        }
 
-        [HttpGet("cluster/from/{fromTime}/to/{toTime}")]
+        [HttpGet("errors-count/cluster/from/{fromTime}/to/{toTime}")]
         public IActionResult GetMetricsFromAllCluster
             (
             [FromRoute] TimeSpan fromTime,
             [FromRoute] TimeSpan toTime
             )
         {
+            _logger.LogInformation($"Получение количества ошибок за период: {fromTime}, {toTime}",
+                fromTime.ToString(),
+                toTime.ToString());
             return Ok();
         }
     }

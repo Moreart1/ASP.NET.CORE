@@ -11,35 +11,26 @@ namespace MetricsManager.Controllers
     [ApiController]
     public class HddMetricsController : ControllerBase
     {
+        private readonly ILogger<HddMetricsController> _logger;
 
-        [HttpGet("left/from/{fromTime}/to/{toTime}")]
-        public IActionResult Left
-            (
-            [FromRoute] TimeSpan fromTime,
-            [FromRoute] TimeSpan toTime
-            )
+        public HddMetricsController(ILogger<HddMetricsController> logger)
         {
+            _logger = logger;
+            _logger.LogDebug(1, "NLog встроен в CpuMetricsController");
+        }
+
+        [HttpGet("left/agent/{agentId}")]
+        public IActionResult Left([FromRoute] int agentId)                             
+        {
+            _logger.LogInformation($"Получение свободного места на HDD у {agentId}",
+               agentId);
             return Ok();
         }
 
-        [HttpGet("agent/{agentId}/from/{fromTime}/to/{toTime}")]
-        public IActionResult GetMetricsFromAgent
-            (
-            [FromRoute] int agentId,
-            [FromRoute] TimeSpan fromTime,
-            [FromRoute] TimeSpan toTime
-            )
+        [HttpGet("left/cluster")]
+        public IActionResult GetMetricsFromAllCluster()           
         {
-            return Ok();
-        }
-
-        [HttpGet("cluster/from/{fromTime}/to/{toTime}")]
-        public IActionResult GetMetricsFromAllCluster
-            (
-            [FromRoute] TimeSpan fromTime,
-            [FromRoute] TimeSpan toTime
-            )
-        {
+            _logger.LogInformation("Получение свободного места на HDD");
             return Ok();
         }
 

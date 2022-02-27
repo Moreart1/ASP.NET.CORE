@@ -1,5 +1,7 @@
 ﻿using MetricsManager.Controllers;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using Moq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,20 +14,23 @@ namespace MetricsManagerTest
     public class HddControllerUnitTests
     {
         private HddMetricsController controller;
+
+        private Mock<ILogger<HddMetricsController>> mockLogger;
+
         public HddControllerUnitTests()
         {
-            controller = new HddMetricsController();
+            mockLogger = new Mock<ILogger<HddMetricsController>>();
+            controller = new HddMetricsController(mockLogger.Object);
         }
 
         [Fact]
         public void Left_ReturnOk()
         {
             //Arrange
-            var fromTime = TimeSpan.FromSeconds(0);
-            var toTime = TimeSpan.FromSeconds(100);
+            var agentId = 1;
 
             //act
-            var result = controller.Left(fromTime, toTime);
+            var result = controller.Left(agentId);
 
             //Assert
             _ = Assert.IsAssignableFrom<IActionResult>(result);
@@ -33,32 +38,12 @@ namespace MetricsManagerTest
 
         [Fact]
         public void GetMetricsFromAllCluster_ReturnOk()
-        {
-            //Arrange
-            var fromTime = TimeSpan.FromSeconds(0);
-            var toTime = TimeSpan.FromSeconds(100);
-
+        {          
             //act
-            var result = controller.GetMetricsFromAllCluster(fromTime, toTime);
+            var result = controller.GetMetricsFromAllCluster();
 
             //Assert
             _ = Assert.IsAssignableFrom<IActionResult>(result);
-        }
-
-        [Fact]
-        public void GetMetricsFromAgent_ReturnsOk()
-        {
-            //Arrange
-            var agentId = 1;
-            var fromTime = TimeSpan.FromSeconds(0);
-            var toTime = TimeSpan.FromSeconds(100);
-
-            //act
-            var result = controller.GetMetricsFromAgent(agentId, fromTime, toTime);
-
-            //Assert
-            _ = Assert.IsAssignableFrom<IActionResult>(result);
-        }
-
+        }       
     }
 }

@@ -11,38 +11,27 @@ namespace MetricsManager.Controllers
     [ApiController]
     public class RamMetricsController : ControllerBase
     {
-        [HttpGet("available/from/{fromTime}/to/{toTime}")]
-        public IActionResult Available
-            (
-            [FromRoute] TimeSpan fromTime,
-            [FromRoute] TimeSpan toTime
-            )
+        private readonly ILogger<RamMetricsController> _logger;
+
+        public RamMetricsController(ILogger<RamMetricsController> logger)
         {
+            _logger = logger;
+            _logger.LogDebug(1, "NLog встроен в CpuMetricsController");
+        }
+
+        [HttpGet("available/agent{agentId}")]
+        public IActionResult Available([FromRoute] int agentId)          
+        {
+            _logger.LogInformation($"Получение RAM у {agentId}",
+               agentId);
             return Ok();
         }
 
-
-        [HttpGet("agent/{agentId}/from/{fromTime}/to/{toTime}")]
-        public IActionResult GetMetricsFromAgent
-            (
-            [FromRoute] int agentId,
-            [FromRoute] TimeSpan fromTime,
-            [FromRoute] TimeSpan toTime
-            )
+        [HttpGet("available/cluster")]
+        public IActionResult GetMetricsFromAllCluster()          
         {
+            _logger.LogInformation("Получение RAM");
             return Ok();
         }
-
-        [HttpGet("cluster/from/{fromTime}/to/{toTime}")]
-        public IActionResult GetMetricsFromAllCluster
-            (
-            [FromRoute] TimeSpan fromTime,
-            [FromRoute] TimeSpan toTime
-            )
-        {
-            return Ok();
-        }
-
-
     }
 }
