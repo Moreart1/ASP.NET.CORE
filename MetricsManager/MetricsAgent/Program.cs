@@ -1,8 +1,4 @@
-using System;
 using NLog.Web;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Hosting;
 using MetricsAgent;
 
 namespace MetricsManager

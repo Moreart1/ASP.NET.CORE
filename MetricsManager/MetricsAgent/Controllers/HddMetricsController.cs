@@ -1,6 +1,9 @@
-﻿using MetricsAgent.Interface;
-using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
+using MetricsAgent.Interface;
+using MetricsAgent.Models;
+using MetricsAgent.Request;
 using Microsoft.AspNetCore.Mvc;
+using static MetricsAgent.Responses.AllMetricsResponses;
 
 namespace MetricsAgent.Controllers
 {
@@ -9,20 +12,40 @@ namespace MetricsAgent.Controllers
     public class HddMetricsController : ControllerBase
     {
         private readonly ILogger<HddMetricsController> _logger;
-        private readonly IHddMetricsRepository _hddNetMetricsRepository;
 
-        public HddMetricsController(ILogger<HddMetricsController> logger, IHddMetricsRepository repository)
+        private readonly IHddMetricsRepository _hddMetricsRepository;
+
+        private readonly IMapper _mapper;
+
+        public HddMetricsController(ILogger<HddMetricsController> logger, IHddMetricsRepository repository, IMapper mapper)
         {
             _logger = logger;
-            _hddNetMetricsRepository = repository;
+            _hddMetricsRepository = repository;
+            _mapper = mapper;
         }
 
 
         [HttpGet("left")]
-        public IActionResult GetRemainingFreeDiskSpaceMetrics()
+        public IActionResult GetRemainingFreeDiskSpaceMetrics(
+            [FromRoute] TimeSpan fromTime,
+            [FromRoute] TimeSpan toTime)
         {
-            _logger.LogInformation("Получение свободного места  HDD");
-            return Ok();
+            IList<HddMetric> metrics = _hddMetricsRepository.GetAll(fromTime, toTime);
+
+            var response = new HddMetricResponse()
+            {
+                Metrics = new List<HddMetricsDto>()
+            };
+
+            foreach (var metric in metrics)
+            {
+                response.Metrics.Add(_mapper.Map<HddMetricsDto>(metric));
+            }
+
+            _logger.LogInformation($"Получение свободного места  HDD за период : {fromTime}, \t {toTime}",
+               fromTime.ToString(),
+               toTime.ToString());
+            return Ok(response);
         }
     }
 }

@@ -1,14 +1,11 @@
-﻿using MetricsAgent.Controllers;
+﻿using AutoMapper;
+using MetricsAgent.Controllers;
 using MetricsAgent.Interface;
-using MetricsAgent.Repositories;
-using Microsoft.AspNetCore.Mvc;
+using MetricsAgent.Models;
 using Microsoft.Extensions.Logging;
 using Moq;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace MetricsAgentTest
@@ -16,21 +13,39 @@ namespace MetricsAgentTest
     public class RamControllerUnitTests
     {
         private readonly RamMetricsController _controller;
-        private readonly Mock<RamMetricsRepository> _mock;
+
+        private readonly Mock<IRamMetricsRepository> _mockRepository;
+
+        private readonly Mock<ILogger<RamMetricsController>> _mockLogger;
+
+        private readonly Mock<IMapper> _mockMapper;
 
         public RamControllerUnitTests()
         {
-            _mock = new Mock<RamMetricsRepository>();
-            _controller = new RamMetricsController(new Mock<ILogger<RamMetricsController>>().Object, _mock.Object);
+            _mockLogger = new Mock<ILogger<RamMetricsController>>();
+            _mockRepository = new Mock<IRamMetricsRepository>();
+            _mockMapper = new Mock<IMapper>();
+            _controller = new RamMetricsController(_mockLogger.Object, _mockRepository.Object, _mockMapper.Object);
         }
 
 
-        [Fact]
-        public void GetFreeRamSizeMetrics_ReturnsOk()
+        [Theory]
+        [InlineData(0, 100)]
+        public void GetFreeRamSizeMetrics_ReturnsOk(int start, int end)
         {
-            var result = _controller.GetFreeRamSizeMetrics();
+            var fromTime = TimeSpan.FromSeconds(start);
+            var toTime = TimeSpan.FromSeconds(end);
 
-            _ = Assert.IsAssignableFrom<IActionResult>(result);
+            _mockRepository.Setup(_ramMetricsRepository => _ramMetricsRepository.GetAll(
+                It.IsAny<TimeSpan>(),
+                It.IsAny<TimeSpan>())).Returns(new List<RamMetric>());
+
+            var result = _controller.GetFreeRamSizeMetrics(fromTime, toTime);
+
+            _mockRepository.Verify(_ramMetricsRepository => _ramMetricsRepository.GetAll(
+                It.IsAny<TimeSpan>(),
+                It.IsAny<TimeSpan>()),
+                Times.AtMostOnce());
         }
     }
 }
