@@ -25,12 +25,10 @@ namespace MetricsAgent.Controllers
         }
 
         [HttpGet("from/{fromTime}/to/{toTime}")]
-        public IActionResult GetMetrics(
-           [FromRoute] TimeSpan fromTime,
-           [FromRoute] TimeSpan toTime)
+        public IActionResult GetMetrics([FromRoute] DateTimeOffset fromTime, [FromRoute] DateTimeOffset toTime)
         {
-            IList<NetworkMetric> metrics = _networkMetricsRepository.GetAll(fromTime, toTime);
-
+            _logger.LogInformation($"Запуск NetworkMetricsController.GetMetrics с параметрами: {fromTime}, {toTime}.");
+            var metrics = _networkMetricsRepository.GetByTimePeriod(fromTime.ToUnixTimeSeconds(), toTime.ToUnixTimeSeconds());
             var response = new NetworkMetricResponse()
             {
                 Metrics = new List<NetworkMetricsDto>()
@@ -40,10 +38,6 @@ namespace MetricsAgent.Controllers
             {
                 response.Metrics.Add(_mapper.Map<NetworkMetricsDto>(metric));
             }
-
-            _logger.LogInformation($"Получение метрик за период: {fromTime}, \t {toTime}",
-                fromTime.ToString(),
-                toTime.ToString());
             return Ok(response);
         }
     }

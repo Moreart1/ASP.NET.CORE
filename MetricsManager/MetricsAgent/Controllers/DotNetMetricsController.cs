@@ -1,13 +1,12 @@
 ﻿using AutoMapper;
 using MetricsAgent.Interface;
-using MetricsAgent.Models;
 using MetricsAgent.Request;
 using Microsoft.AspNetCore.Mvc;
 using static MetricsAgent.Responses.AllMetricsResponses;
 
 namespace MetricsAgent.Controllers
 {
-    [Route("api/metrics/dotnet")]
+    [Route("api/metrics/dotnet/errors-count")]
     [ApiController]
     public class DotNetMetricsController : ControllerBase
     {
@@ -24,13 +23,11 @@ namespace MetricsAgent.Controllers
             _mapper = mapper;
         }
 
-        [HttpGet("errors-count/from/{fromTime}/to/{toTime}")]
-        public IActionResult GetErrorsCountMetricsDto(
-            [FromRoute] TimeSpan fromTime,
-            [FromRoute] TimeSpan toTime)
+        [HttpGet("from/{fromTime}/to/{toTime}")]
+        public IActionResult GetMetrics([FromRoute] DateTimeOffset fromTime, [FromRoute] DateTimeOffset toTime)
         {
-            IList<DotNetMetric> metrics = _dotNetMetricsRepository.GetAll(fromTime, toTime);
-
+            _logger.LogInformation($"Запуск DotNetMetricsController.GetMetrics с параметрами: {fromTime}, {toTime}.");
+            var metrics = _dotNetMetricsRepository.GetByTimePeriod(fromTime.ToUnixTimeSeconds(), toTime.ToUnixTimeSeconds());
             var response = new DotNetMetricResponse()
             {
                 Metrics = new List<DotNetMetricsDto>()
@@ -40,10 +37,6 @@ namespace MetricsAgent.Controllers
             {
                 response.Metrics.Add(_mapper.Map<DotNetMetricsDto>(metric));
             }
-
-            _logger.LogInformation($"Получение количества ошибок за период: {fromTime}, \t {toTime} ",
-                fromTime.ToString(),
-                toTime.ToString());
             return Ok(response);
         }
     }

@@ -26,6 +26,7 @@ namespace MetricsAgent
 
             services.AddControllers();
             services.AddControllersWithViews();
+
             services.AddSingleton<ICpuMetricsRepository, CpuMetricsRepository>();
 
             services.AddSingleton<IDotNetMetricsRepository, DotNetMetricsRepository>();
@@ -40,6 +41,7 @@ namespace MetricsAgent
 
             services.AddSingleton(mapper);
 
+            ConfigureSqlLiteConnection();
             
             services.AddControllers();
             services.AddEndpointsApiExplorer();
@@ -69,33 +71,22 @@ namespace MetricsAgent
 
         private void PrepareSchema(SQLiteConnection connection)
         {
-            using var command = new SQLiteCommand(connection);
+            connection.Execute("DROP TABLE IF EXISTS cpumetrics");
+            connection.Execute("DROP TABLE IF EXISTS dotnetmetrics");
+            connection.Execute("DROP TABLE IF EXISTS hddmetrics");
+            connection.Execute("DROP TABLE IF EXISTS networkmetrics");
+            connection.Execute("DROP TABLE IF EXISTS rammetrics");
 
-            command.CommandText = "DROP TABLE IF EXISTS cpumetrics";
-            command.ExecuteNonQuery();
-            command.CommandText = @"CREATE TABLE cpumetrics(id INTEGER PRIMARY KEY, value INT, time INT64)";
-            command.ExecuteNonQuery();
-         
-            command.CommandText = "DROP TABLE IF EXISTS dotnetmetrics";
-            command.ExecuteNonQuery();
-            command.CommandText = @"CREATE TABLE dotnetmetrics(id INTEGER PRIMARY KEY, value INT, time INT64)";
-            command.ExecuteNonQuery();
-            
-            command.CommandText = "DROP TABLE IF EXISTS hddmetrics";
-            command.ExecuteNonQuery();
-            command.CommandText = @"CREATE TABLE hddmetrics(id INTEGER PRIMARY KEY, value INT, time INT64)";
-            command.ExecuteNonQuery();
-            
-            command.CommandText = "DROP TABLE IF EXISTS networkmetrics";
-            command.ExecuteNonQuery();
-            command.CommandText = @"CREATE TABLE networkmetrics(id INTEGER PRIMARY KEY, value INT, time INT64)";
-            command.ExecuteNonQuery();
-            
-            command.CommandText = "DROP TABLE IF EXISTS rammetrics";
-            command.ExecuteNonQuery();
-            command.CommandText = @"CREATE TABLE rammetrics(id INTEGER PRIMARY KEY, value INT, time INT64)";
-            command.ExecuteNonQuery();
-           
+            connection.Execute("CREATE TABLE cpumetrics (id INTEGER PRIMARY KEY, value INT, time INT)");
+            connection.Execute("insert into cpumetrics (value, time) values (10, 1234567891), (11, 5432134567)");
+            connection.Execute("CREATE TABLE dotnetmetrics (id INTEGER PRIMARY KEY, value INT, time INT)");
+            connection.Execute("insert into dotnetmetrics (value, time) values (11, 1468189122), (12, 1564554789)");
+            connection.Execute("CREATE TABLE hddmetrics (id INTEGER PRIMARY KEY, value INT, time INT)");
+            connection.Execute("insert into hddmetrics (value, time) values (21, 1356795467), (31, 1895689509)");
+            connection.Execute("CREATE TABLE networkmetrics (id INTEGER PRIMARY KEY, value INT, time INT)");
+            connection.Execute("insert into networkmetrics (value, time) values (41, 6745695678), (51, 7654797880)");
+            connection.Execute("CREATE TABLE rammetrics (id INTEGER PRIMARY KEY, value INT, time INT)");
+            connection.Execute("insert into rammetrics (value, time) values (61, 15436789123), (71,1235643567 )");
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

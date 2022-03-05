@@ -1,13 +1,12 @@
 ﻿using AutoMapper;
 using MetricsAgent.Interface;
-using MetricsAgent.Models;
 using MetricsAgent.Request;
 using Microsoft.AspNetCore.Mvc;
 using static MetricsAgent.Responses.AllMetricsResponses;
 
 namespace MetricsAgent.Controllers
 {
-    [Route("api/metrics/hdd")]
+    [Route("api/metrics/hdd/left")]
     [ApiController]
     public class HddMetricsController : ControllerBase
     {
@@ -24,14 +23,11 @@ namespace MetricsAgent.Controllers
             _mapper = mapper;
         }
 
-
-        [HttpGet("left")]
-        public IActionResult GetRemainingFreeDiskSpaceMetrics(
-            [FromRoute] TimeSpan fromTime,
-            [FromRoute] TimeSpan toTime)
+        [HttpGet("from/{fromTime}/to/{toTime}")]
+        public IActionResult GetMetrics([FromRoute] DateTimeOffset fromTime, [FromRoute] DateTimeOffset toTime)
         {
-            IList<HddMetric> metrics = _hddMetricsRepository.GetAll(fromTime, toTime);
-
+            _logger.LogInformation($"Запуск HddMetricsController.GetMetrics с параметрами: {fromTime}, {toTime}.");
+            var metrics = _hddMetricsRepository.GetByTimePeriod(fromTime.ToUnixTimeSeconds(), toTime.ToUnixTimeSeconds());
             var response = new HddMetricResponse()
             {
                 Metrics = new List<HddMetricsDto>()
@@ -41,11 +37,8 @@ namespace MetricsAgent.Controllers
             {
                 response.Metrics.Add(_mapper.Map<HddMetricsDto>(metric));
             }
-
-            _logger.LogInformation($"Получение свободного места  HDD за период : {fromTime}, \t {toTime}",
-               fromTime.ToString(),
-               toTime.ToString());
             return Ok(response);
         }
+
     }
 }

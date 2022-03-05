@@ -1,7 +1,5 @@
 ﻿using AutoMapper;
-using ClassLibrary1;
 using MetricsAgent.Interface;
-using MetricsAgent.Models;
 using MetricsAgent.Request;
 using Microsoft.AspNetCore.Mvc;
 using static MetricsAgent.Responses.AllMetricsResponses;
@@ -25,29 +23,11 @@ namespace MetricsAgent.Controllers
             _mapper = mapper;
         }
 
-        [HttpGet("from/{fromTime}/to/{toTime}/percentiles/{percentile}")]
-        public IActionResult GetMetricsByPercentile(
-            [FromRoute] TimeSpan fromTime,
-            [FromRoute] TimeSpan toTime,
-            [FromRoute] Percentile percentile)
-        {
-            _logger.LogInformation($"Получение показателей ЦП за период: {fromTime},\t {toTime} c процентилем {percentile}",
-                fromTime.ToString(),
-                toTime.ToString());
-            return Ok();
-        }
-
-        /// <summary>
-        /// Data Transfer Object (DTO)
-        /// </summary>
-        /// <returns></returns>
         [HttpGet("from/{fromTime}/to/{toTime}")]
-        public IActionResult GetMetrics(
-            [FromRoute] TimeSpan fromTime,
-            [FromRoute] TimeSpan toTime)
+        public IActionResult GetMetrics([FromRoute] DateTimeOffset fromTime, [FromRoute] DateTimeOffset toTime)
         {
-            IList<CpuMetric> metrics = _cpuMetricsRepository.GetAll(fromTime, toTime);
-
+            _logger.LogInformation($"Запуск CpuMetricsController.GetMetrics с параметрами: {fromTime}, {toTime}.");
+            var metrics = _cpuMetricsRepository.GetByTimePeriod(fromTime.ToUnixTimeSeconds(), toTime.ToUnixTimeSeconds());
             var response = new CpuMetricResponse()
             {
                 Metrics = new List<CpuMetricsDto>()
@@ -57,12 +37,9 @@ namespace MetricsAgent.Controllers
             {
                 response.Metrics.Add(_mapper.Map<CpuMetricsDto>(metric));
             }
-
-            _logger.LogInformation($"Получение показателей ЦП за период: {fromTime},\t {toTime}",
-                fromTime.ToString(),
-                toTime.ToString());
-
             return Ok(response);
         }
+
+
     }
 }

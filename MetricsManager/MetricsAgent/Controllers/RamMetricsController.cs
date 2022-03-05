@@ -7,7 +7,7 @@ using static MetricsAgent.Responses.AllMetricsResponses;
 
 namespace MetricsAgent.Controllers
 {
-    [Route("api/metrics/ram")]
+    [Route("api/metrics/ram/available")]
     [ApiController]
     public class RamMetricsController : ControllerBase
     {
@@ -24,14 +24,11 @@ namespace MetricsAgent.Controllers
             _mapper = mapper;
         }
 
-
-        [HttpGet("available")]
-        public IActionResult GetFreeRamSizeMetrics(
-           [FromRoute] TimeSpan fromTime,
-           [FromRoute] TimeSpan toTime)
+        [HttpGet("from/{fromTime}/to/{toTime}")]
+        public IActionResult GetMetrics([FromRoute] DateTimeOffset fromTime, [FromRoute] DateTimeOffset toTime)
         {
-            IList<RamMetric> metrics = _ramMetricsRepository.GetAll(fromTime, toTime);
-
+            _logger.LogInformation($"Запуск RamMetricsController.GetMetrics с параметрами: {fromTime}, {toTime}.");
+            var metrics = _ramMetricsRepository.GetByTimePeriod(fromTime.ToUnixTimeSeconds(), toTime.ToUnixTimeSeconds());
             var response = new RamMetricResponse()
             {
                 Metrics = new List<RamMetricsDto>()
@@ -41,9 +38,6 @@ namespace MetricsAgent.Controllers
             {
                 response.Metrics.Add(_mapper.Map<RamMetricsDto>(metric));
             }
-            _logger.LogInformation($"Получение RAM за период: {fromTime}, \t {toTime}",
-                fromTime.ToString(),
-                toTime.ToString());
             return Ok(response);
         }
     }

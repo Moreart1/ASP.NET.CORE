@@ -3,14 +3,7 @@
 
     public interface IRepository<T> where T : class
     {
-        IList<T> GetAll(TimeSpan fromTime, TimeSpan toTime);
-
-        T GetById(int id);
-
+        IList<T> GetByTimePeriod(long fromTime, long toTime);
         void Create(T item);
-
-        void Update(T item);
-
-        void Delete(int id);
     }
 }

@@ -14,8 +14,4 @@
     <Content Update="nlog.config" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\ClassLibrary1\Enum.csproj" />
-  </ItemGroup>
-
 </Project>
