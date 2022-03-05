@@ -28,23 +28,12 @@ namespace MetricsAgentTest
             _controller = new HddMetricsController(_mockLogger.Object, _mockRepository.Object, _mockMapper.Object);
         }
 
-        [Theory]
-        [InlineData(0, 100)]
-        public void GetRemainingFreeDiskSpaceMetrics_ReturnsOk(int start, int end)
+        [Fact]
+        public void GetByTimePeriod_ShouldCall_GetByTimePeriod_From_Repository()
         {
-            var fromTime = TimeSpan.FromSeconds(start);
-            var toTime = TimeSpan.FromSeconds(end);
-
-            _mockRepository.Setup(_hddMetricsRepository => _hddMetricsRepository.GetAll(
-                It.IsAny<TimeSpan>(),
-                It.IsAny<TimeSpan>())).Returns(new List<HddMetric>());
-
-            var result = _controller.GetRemainingFreeDiskSpaceMetrics(fromTime, toTime);
-
-            _mockRepository.Verify(_hddMetricsRepository => _hddMetricsRepository.GetAll(
-                It.IsAny<TimeSpan>(),
-                It.IsAny<TimeSpan>()),
-                Times.AtMostOnce());
+            _mockRepository.Setup(repository => repository.GetByTimePeriod(It.IsAny<long>(), It.IsAny<long>())).Returns(new List<HddMetric>());
+            var result = _controller.GetMetrics(DateTimeOffset.UtcNow, DateTimeOffset.UtcNow);
+            _mockRepository.Verify(repository => repository.GetByTimePeriod(It.IsAny<long>(), It.IsAny<long>()), Times.AtMostOnce());
         }
     }
 }

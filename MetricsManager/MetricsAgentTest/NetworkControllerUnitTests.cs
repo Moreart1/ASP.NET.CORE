@@ -28,24 +28,12 @@ namespace MetricsAgentTest
             _controller = new NetworkMetricsController(_mockLogger.Object, _mockRepository.Object, _mockMapper.Object);
         }
 
-
-        [Theory]
-        [InlineData(0, 100)]
-        public void GetMetrics_ReturnsOk(int start, int end)
+        [Fact]
+        public void GetByTimePeriod_ShouldCall_GetByTimePeriod_From_Repository()
         {
-            var fromTime = TimeSpan.FromSeconds(start);
-            var toTime = TimeSpan.FromSeconds(end);
-
-
-            _mockRepository.Setup(_networkMetricsRepository => _networkMetricsRepository.GetAll(
-                It.IsAny<TimeSpan>(),
-                It.IsAny<TimeSpan>())).Returns(new List<NetworkMetric>());
-
-            var result = _controller.GetMetrics(fromTime, toTime);
-
-            _mockRepository.Verify(_networkMetricsRepository => _networkMetricsRepository.GetAll(It.IsAny<TimeSpan>(),
-                It.IsAny<TimeSpan>()),
-                Times.AtMostOnce());
+            _mockRepository.Setup(repository => repository.GetByTimePeriod(It.IsAny<long>(), It.IsAny<long>())).Returns(new List<NetworkMetric>());
+            var result = _controller.GetMetrics(DateTimeOffset.UtcNow, DateTimeOffset.UtcNow);
+            _mockRepository.Verify(repository => repository.GetByTimePeriod(It.IsAny<long>(), It.IsAny<long>()), Times.AtMostOnce());
         }
     }
 }
