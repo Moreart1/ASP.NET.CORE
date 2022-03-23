@@ -40,6 +40,5 @@ namespace MetricsAgent.Controllers
             return Ok(response);
         }
 
-
     }
 }
