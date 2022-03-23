@@ -1,28 +1,44 @@
-﻿using MetricsAgent.Interface;
-using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
+using MetricsAgent.Interface;
+using MetricsAgent.Models;
+using MetricsAgent.Request;
 using Microsoft.AspNetCore.Mvc;
+using static MetricsAgent.Responses.AllMetricsResponses;
 
 namespace MetricsAgent.Controllers
 {
-    [Route("api/metrics/ram")]
+    [Route("api/metrics/ram/available")]
     [ApiController]
     public class RamMetricsController : ControllerBase
     {
         private readonly ILogger<RamMetricsController> _logger;
+
         private readonly IRamMetricsRepository _ramMetricsRepository;
 
-        public RamMetricsController(ILogger<RamMetricsController> logger, IRamMetricsRepository repository)
+        private readonly IMapper _mapper;
+
+        public RamMetricsController(ILogger<RamMetricsController> logger, IRamMetricsRepository repository, IMapper mapper)
         {
             _logger = logger;
             _ramMetricsRepository = repository;
+            _mapper = mapper;
         }
 
-
-        [HttpGet("available")]
-        public IActionResult GetFreeRamSizeMetrics()
+        [HttpGet("from/{fromTime}/to/{toTime}")]
+        public IActionResult GetMetrics([FromRoute] DateTimeOffset fromTime, [FromRoute] DateTimeOffset toTime)
         {
-            _logger.LogInformation("Получение RAM");
-            return Ok();
+            _logger.LogInformation($"Запуск RamMetricsController.GetMetrics с параметрами: {fromTime}, {toTime}.");
+            var metrics = _ramMetricsRepository.GetByTimePeriod(fromTime.ToUnixTimeSeconds(), toTime.ToUnixTimeSeconds());
+            var response = new RamMetricResponse()
+            {
+                Metrics = new List<RamMetricsDto>()
+            };
+
+            foreach (var metric in metrics)
+            {
+                response.Metrics.Add(_mapper.Map<RamMetricsDto>(metric));
+            }
+            return Ok(response);
         }
     }
 }

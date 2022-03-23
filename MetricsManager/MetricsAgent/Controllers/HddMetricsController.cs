@@ -1,28 +1,44 @@
-﻿using MetricsAgent.Interface;
-using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
+using MetricsAgent.Interface;
+using MetricsAgent.Request;
 using Microsoft.AspNetCore.Mvc;
+using static MetricsAgent.Responses.AllMetricsResponses;
 
 namespace MetricsAgent.Controllers
 {
-    [Route("api/metrics/hdd")]
+    [Route("api/metrics/hdd/left")]
     [ApiController]
     public class HddMetricsController : ControllerBase
     {
         private readonly ILogger<HddMetricsController> _logger;
-        private readonly IHddMetricsRepository _hddNetMetricsRepository;
 
-        public HddMetricsController(ILogger<HddMetricsController> logger, IHddMetricsRepository repository)
+        private readonly IHddMetricsRepository _hddMetricsRepository;
+
+        private readonly IMapper _mapper;
+
+        public HddMetricsController(ILogger<HddMetricsController> logger, IHddMetricsRepository repository, IMapper mapper)
         {
             _logger = logger;
-            _hddNetMetricsRepository = repository;
+            _hddMetricsRepository = repository;
+            _mapper = mapper;
         }
 
-
-        [HttpGet("left")]
-        public IActionResult GetRemainingFreeDiskSpaceMetrics()
+        [HttpGet("from/{fromTime}/to/{toTime}")]
+        public IActionResult GetMetrics([FromRoute] DateTimeOffset fromTime, [FromRoute] DateTimeOffset toTime)
         {
-            _logger.LogInformation("Получение свободного места  HDD");
-            return Ok();
+            _logger.LogInformation($"Запуск HddMetricsController.GetMetrics с параметрами: {fromTime}, {toTime}.");
+            var metrics = _hddMetricsRepository.GetByTimePeriod(fromTime.ToUnixTimeSeconds(), toTime.ToUnixTimeSeconds());
+            var response = new HddMetricResponse()
+            {
+                Metrics = new List<HddMetricsDto>()
+            };
+
+            foreach (var metric in metrics)
+            {
+                response.Metrics.Add(_mapper.Map<HddMetricsDto>(metric));
+            }
+            return Ok(response);
         }
+
     }
 }

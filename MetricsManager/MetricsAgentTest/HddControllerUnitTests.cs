@@ -1,9 +1,11 @@
+using AutoMapper;
 using MetricsAgent.Controllers;
 using MetricsAgent.Interface;
-using MetricsAgent.Repositories;
-using Microsoft.AspNetCore.Mvc;
+using MetricsAgent.Models;
 using Microsoft.Extensions.Logging;
 using Moq;
+using System;
+using System.Collections.Generic;
 using Xunit;
 
 namespace MetricsAgentTest
@@ -11,20 +13,27 @@ namespace MetricsAgentTest
     public class HddControllerUnitTests
     {
         private readonly HddMetricsController _controller;
-        private readonly Mock<HddMetricsRepository> _mock;
+
+        private readonly Mock<IHddMetricsRepository> _mockRepository;
+
+        private readonly Mock<ILogger<HddMetricsController>> _mockLogger;
+
+        private readonly Mock<IMapper> _mockMapper;
 
         public HddControllerUnitTests()
         {
-            _mock = new Mock<HddMetricsRepository>();
-            _controller = new HddMetricsController(new Mock<ILogger<HddMetricsController>>().Object, _mock.Object);
+            _mockLogger = new Mock<ILogger<HddMetricsController>>();
+            _mockRepository = new Mock<IHddMetricsRepository>();
+            _mockMapper = new Mock<IMapper>();
+            _controller = new HddMetricsController(_mockLogger.Object, _mockRepository.Object, _mockMapper.Object);
         }
 
         [Fact]
-        public void GetRemainingFreeDiskSpaceMetrics_ReturnsOk()
+        public void GetByTimePeriod_ShouldCall_GetByTimePeriod_From_Repository()
         {
-            var result = _controller.GetRemainingFreeDiskSpaceMetrics();
-
-            _ = Assert.IsAssignableFrom<IActionResult>(result);
+            _mockRepository.Setup(repository => repository.GetByTimePeriod(It.IsAny<long>(), It.IsAny<long>())).Returns(new List<HddMetric>());
+            var result = _controller.GetMetrics(DateTimeOffset.UtcNow, DateTimeOffset.UtcNow);
+            _mockRepository.Verify(repository => repository.GetByTimePeriod(It.IsAny<long>(), It.IsAny<long>()), Times.AtMostOnce());
         }
     }
 }
