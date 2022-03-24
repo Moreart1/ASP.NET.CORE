@@ -1,4 +1,6 @@
+using AutoMapper;
 using MetricsManager.Controllers;
+using MetricsManager.DAL.Interface;
 using MetricsManager.Model;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -9,13 +11,21 @@ namespace MetricsManagerTest
 {
     public class AgentsControllerUnitTests
     {
-        private AgentsController controller;
 
-        private Mock<ILogger<AgentsController>> mockLogger;
+        private readonly AgentsController _controller;
+
+        private readonly Mock<IAgentsRepository> _mockRepository;
+
+        private readonly Mock<ILogger<AgentsController>> _mockLogger;
+
+        private readonly Mock<IMapper> _mockMapper;
+
         public AgentsControllerUnitTests()
         {
-            mockLogger = new Mock<ILogger<AgentsController>>();
-            controller = new AgentsController(mockLogger.Object);
+            _mockRepository = new Mock<IAgentsRepository>();
+            _mockLogger = new Mock<ILogger<AgentsController>>();
+            _mockMapper = new Mock<IMapper>();
+            _controller = new AgentsController(_mockLogger.Object, _mockRepository.Object, _mockMapper.Object);
         }
 
         [Fact]
@@ -25,7 +35,7 @@ namespace MetricsManagerTest
             var agent = new AgentInfo();
 
             //act
-            var result = controller.RegisterAgent(agent);
+            var result = _controller.RegisterAgent(agent);
 
             //Assert
             _ = Assert.IsAssignableFrom<IActionResult>(result);
@@ -38,7 +48,7 @@ namespace MetricsManagerTest
             var agentId = 1;
 
             //act
-            var result = controller.EnableAgentById(agentId);
+            var result = _controller.EnableAgentById(agentId);
 
             //Assert
             _ = Assert.IsAssignableFrom<IActionResult>(result);
@@ -51,19 +61,12 @@ namespace MetricsManagerTest
             var agentId = 1;
 
             //act
-            var result = controller.DisableAgentById(agentId);
+            var result = _controller.DisableAgentById(agentId);
 
             //Assert
             _ = Assert.IsAssignableFrom<IActionResult>(result);
         }
-
-        [Fact]
-        public void GetRegisterMetrics_ReturnsOk()
-        {
-            var result = controller.GetRegisterAgents();
-
-            Assert.Null(result);
-        }
+        
 
     }
 }

@@ -1,4 +1,7 @@
-﻿using MetricsManager.Controllers;
+﻿using AutoMapper;
+using MetricsManager.Controllers;
+using MetricsManager.DAL.Interface;
+using MetricsManager.Model;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -13,37 +16,28 @@ namespace MetricsManagerTest
 {
     public class HddControllerUnitTests
     {
-        private HddMetricsController controller;
+        private readonly HddMetricsController _controller;
 
-        private Mock<ILogger<HddMetricsController>> mockLogger;
+        private readonly Mock<IHddMetricsRepository> _mockRepository;
+
+        private readonly Mock<ILogger<HddMetricsController>> _mockLogger;
+
+        private readonly Mock<IMapper> _mockMapper;
 
         public HddControllerUnitTests()
         {
-            mockLogger = new Mock<ILogger<HddMetricsController>>();
-            controller = new HddMetricsController(mockLogger.Object);
+            _mockLogger = new Mock<ILogger<HddMetricsController>>();
+            _mockRepository = new Mock<IHddMetricsRepository>();
+            _mockMapper = new Mock<IMapper>();
+            _controller = new HddMetricsController(_mockLogger.Object, _mockRepository.Object, _mockMapper.Object);
         }
 
         [Fact]
-        public void Left_ReturnOk()
+        public void GetByTimePeriod_ShouldCall_GetByTimePeriod_From_Repository()
         {
-            //Arrange
-            var agentId = 1;
-
-            //act
-            var result = controller.Left(agentId);
-
-            //Assert
-            _ = Assert.IsAssignableFrom<IActionResult>(result);
+            _mockRepository.Setup(repository => repository.GetByTimePeriod(It.IsAny<long>(), It.IsAny<long>())).Returns(new List<HddMetric>());
+            var result = _controller.GetFreeHDDSpace( DateTimeOffset.UtcNow,DateTimeOffset.UtcNow);
+            _mockRepository.Verify(repository => repository.GetByTimePeriod(It.IsAny<long>(), It.IsAny<long>()), Times.AtMostOnce());
         }
-
-        [Fact]
-        public void GetMetricsFromAllCluster_ReturnOk()
-        {          
-            //act
-            var result = controller.GetMetricsFromAllCluster();
-
-            //Assert
-            _ = Assert.IsAssignableFrom<IActionResult>(result);
-        }       
     }
 }

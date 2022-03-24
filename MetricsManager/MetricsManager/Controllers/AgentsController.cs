@@ -1,10 +1,8 @@
-﻿using MetricsManager.Model;
-using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
+using MetricsManager.DAL.Interface;
+using MetricsManager.Model;
+using MetricsManager.Response.Responses;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace MetricsManager.Controllers
 {
@@ -12,41 +10,75 @@ namespace MetricsManager.Controllers
     [ApiController]
     public class AgentsController : ControllerBase
     {
+        private readonly IAgentsRepository _repository;
         private readonly ILogger<AgentsController> _logger;
+        private readonly IMapper _mapper;
 
-        public AgentsController(ILogger<AgentsController> logger)
+        public AgentsController(ILogger<AgentsController> logger, IAgentsRepository repository, IMapper mapper)
         {
             _logger = logger;
-            _logger.LogDebug(1, "NLog встроен в CpuMetricsController");
+            _repository = repository;
+            _mapper = mapper;
         }
 
         [HttpPost("register")]
         public IActionResult RegisterAgent([FromBody] AgentInfo agentInfo)
         {
+            _repository.Create(_mapper.Map<AgentInfo>(agentInfo));
+
             _logger.LogInformation("Регистрация агента");
+
             return Ok();
+
         }
 
         [HttpPut("enable/{agentId}")]
         public IActionResult EnableAgentById([FromRoute] int agentId)
         {
-            _logger.LogInformation("Активация агента");
+
+            var agent = _repository.GetById(agentId);
+            if (agent is null)
+
+            {
+                return NotFound();
+            }
+            agent.IsEnabled = true;
+
+            _repository.Update(agent);
+
             return Ok();
+
         }
 
         [HttpPut("disable/{agentId}")]
         public IActionResult DisableAgentById([FromRoute] int agentId)
         {
-            _logger.LogInformation("Отключение агента");
+
+            var agent = _repository.GetById(agentId);
+
+            if (agent is null)
+            {
+                return NotFound();
+            }
+
+            agent.IsEnabled = false;
+
+            _repository.Update(agent);
+
             return Ok();
+
+
         }
 
         [HttpGet("getregistagents")]
-        public IEnumerable<AgentInfo> GetRegisterAgents()
+        public IActionResult GetRegisterAgents()
         {
-            _logger.LogInformation("Получение всех агентов");
-            return null;
-        }
+            var agents = _repository.Get();
 
+            return Ok(new GetRegisteredAgentsResponse()
+            {
+                Agents = agents.Select(_mapper.Map<AgentsResponse>)
+            });
+        }
     }
 }
