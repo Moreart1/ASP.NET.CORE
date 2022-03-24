@@ -30,7 +30,7 @@ namespace MetricsAgent
             {
                 c.SwaggerDoc("v1", new OpenApiInfo
                 {
-                    Title = "MetricsManager",
+                    Title = "MetricsAgent",
                     Description = "Отслеживает состояние параметров системы",
                     Contact = new OpenApiContact
                     {
@@ -115,6 +115,7 @@ namespace MetricsAgent
 
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
 
+            app.UseDeveloperExceptionPage();
             // Запускаем миграции
             migrationRunner.MigrateUp();
         }

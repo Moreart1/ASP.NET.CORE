@@ -1,9 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
+using MetricsManager.DAL.Interface;
+using MetricsManager.Response.Responses;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+
 
 namespace MetricsManager.Controllers
 {
@@ -12,28 +11,52 @@ namespace MetricsManager.Controllers
     public class HddMetricsController : ControllerBase
     {
         private readonly ILogger<HddMetricsController> _logger;
+        private readonly IHddMetricsRepository _repository;
+        private readonly IMapper _mapper;
 
-        public HddMetricsController(ILogger<HddMetricsController> logger)
+        public HddMetricsController(ILogger<HddMetricsController> logger,IHddMetricsRepository repository,IMapper mapper)
         {
             _logger = logger;
-            _logger.LogDebug(1, "NLog встроен в CpuMetricsController");
-        }
+            _mapper = mapper;
+            _repository = repository;
+    }
 
         [HttpGet("left/agent/{agentId}")]
-        public IActionResult Left([FromRoute] int agentId)                             
+        public IActionResult GetFreeHDDSpaceFromAgent([FromRoute] int agentId,[FromRoute] DateTimeOffset fromTime,[FromRoute] DateTimeOffset toTime)
         {
-            _logger.LogInformation($"Получение свободного места на HDD у  \t {agentId}",
-               agentId);
-            return Ok();
+            _logger.LogInformation($"Получение свободного места на HDD у {agentId} c {fromTime} до {toTime}");
+
+            var metrics = _repository.GetByTimePeriod(fromTime.ToUnixTimeMilliseconds(), toTime.ToUnixTimeMilliseconds(), agentId);
+
+            var response = new HddGetMetricFromAgentResponse()
+            {
+                Metrics = new List<HddMetricResponse>()
+            };
+
+            foreach (var metric in metrics)
+            {
+                response.Metrics.Add(_mapper.Map<HddMetricResponse>(metric));
+            }
+            return Ok(response);
         }
 
-        [HttpGet("left/cluster")]
-        public IActionResult GetMetricsFromAllCluster()           
+        [HttpGet("from/{fromTime}/to/{toTime}")]
+        public IActionResult GetFreeHDDSpace( [FromRoute] DateTimeOffset fromTime, [FromRoute] DateTimeOffset toTime)
         {
-            _logger.LogInformation("Получение свободного места на всех HDD");
-            return Ok();
+            _logger.LogInformation($"Получение свободного места на HDD  c {fromTime} до {toTime}");
+
+            var metrics = _repository.GetByTimePeriod(fromTime.ToUnixTimeMilliseconds(), toTime.ToUnixTimeMilliseconds());
+
+            var response = new HddGetMetricFromAgentResponse()
+            {
+                Metrics = new List<HddMetricResponse>()
+            };
+
+            foreach (var metric in metrics)
+            {
+                response.Metrics.Add(_mapper.Map<HddMetricResponse>(metric));
+            }
+            return Ok(response);
         }
-
-
     }
 }
