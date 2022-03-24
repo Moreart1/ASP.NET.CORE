@@ -42,7 +42,7 @@ namespace MetricsManager.DAL.Repository
         {
             using (var connection = new SQLiteConnection(ConnectionManager.ConnectionString))
             {
-                return connection.Query<HddMetric>("SELECT Id, Value, Time FROM hddtmetrics WHERE time BETWEEN @fromTime AND @toTime",
+                return connection.Query<HddMetric>("SELECT Id, Value, Time FROM hddmetrics WHERE time BETWEEN @fromTime AND @toTime",
                   new
                   {
                       fromTime = fromTime,

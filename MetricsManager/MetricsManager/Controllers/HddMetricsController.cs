@@ -21,7 +21,7 @@ namespace MetricsManager.Controllers
             _repository = repository;
     }
 
-        [HttpGet("left/agent/{agentId}")]
+        [HttpGet("agent/{agentId}/from/{fromTime}/to/{toTime}")]
         public IActionResult GetFreeHDDSpaceFromAgent([FromRoute] int agentId,[FromRoute] DateTimeOffset fromTime,[FromRoute] DateTimeOffset toTime)
         {
             _logger.LogInformation($"Получение свободного места на HDD у {agentId} c {fromTime} до {toTime}");
@@ -40,7 +40,7 @@ namespace MetricsManager.Controllers
             return Ok(response);
         }
 
-        [HttpGet("from/{fromTime}/to/{toTime}")]
+        [HttpGet("cluster/from/{fromTime}/to/{toTime}")]
         public IActionResult GetFreeHDDSpace( [FromRoute] DateTimeOffset fromTime, [FromRoute] DateTimeOffset toTime)
         {
             _logger.LogInformation($"Получение свободного места на HDD  c {fromTime} до {toTime}");
