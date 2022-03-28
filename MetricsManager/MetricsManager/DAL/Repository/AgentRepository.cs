@@ -13,7 +13,7 @@ namespace MetricsManager.DAL.Repository
         {
             using (var connection = new SQLiteConnection(ConnectionManager.ConnectionString))
             {
-                //connection.ExecuteScalar<int>($"SELECT Count(*) FROM agents WHERE uri=@uri;", new { uri = agent.Url });              
+                connection.ExecuteScalar<int>($"SELECT Count(*) FROM agents WHERE uri=@uri;", new { uri = agent.Url });
                 connection.Execute("INSERT INTO agents (uri,isenabled) VALUES (@uri,@isenabled);",              
                 new
                 {                   
@@ -28,7 +28,9 @@ namespace MetricsManager.DAL.Repository
         {
             using (var connection = new SQLiteConnection(ConnectionManager.ConnectionString))
             {
-                return connection.Query<AgentInfo>("SELECT * FROM agents").ToList();
+                IList<AgentInfo> result = connection.Query<AgentInfo>("SELECT * FROM agents").ToList();
+
+                return result;
             }
         }
 
@@ -45,20 +47,11 @@ namespace MetricsManager.DAL.Repository
         {
             using (var connection = new SQLiteConnection(ConnectionManager.ConnectionString))
             {
-                var count = connection.ExecuteScalar<int>("SELECT Count(*) FROM agents WHERE uri=@uri;", new { uri = agent.Url });
-                if (count <= 0)
-                {
-                    throw new ArgumentException("Агент не существует");
-                }
-                var result = connection.Execute("UPDATE agents SET uri=@uri, isenabled=@isenabled where id=@id;",
-                new
-                {
-                    uri = agent.Url,
-                    isenabled = agent.IsEnabled,
-                    id = agent.Id
-                }
-                );
-                if (result <= 0) throw new InvalidOperationException("Не удалось обновить агента.");
+                connection.Execute("UPDATE agents SET Enabled = @state WHERE AgentId = @agentId",
+                    new
+                    {                      
+                        agent = agent
+                    });
             }
         }
     }

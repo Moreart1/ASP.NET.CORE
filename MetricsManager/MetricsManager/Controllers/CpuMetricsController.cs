@@ -39,19 +39,8 @@ namespace MetricsManager.Controllers
         public IActionResult GetMetricsFromAgent([FromRoute] int agentId, [FromRoute] DateTimeOffset fromTime, [FromRoute] DateTimeOffset toTime)
         {
             _logger.LogInformation($"Запуск CpuMetricsController.GetMetrics с параметрами: {fromTime}, {toTime} от {agentId}.");
-
-            var metrics = _repository.GetByTimePeriod(fromTime.ToUnixTimeMilliseconds(), toTime.ToUnixTimeMilliseconds(), agentId);
-
-            var response = new CpuGetMetricsFromAgentResponse()
-            {
-                Metrics = new List<CpuMetricResponse>()
-            };
-
-            foreach (var metric in metrics)
-            {
-                response.Metrics.Add(_mapper.Map<CpuMetricResponse>(metric));
-            }
-            return Ok(response);
+        
+            return Ok();
         }
 
         /// <summary>

@@ -39,19 +39,8 @@ namespace MetricsManager.Controllers
         public IActionResult GetFreeHDDSpaceFromAgent([FromRoute] int agentId, [FromRoute] DateTimeOffset fromTime, [FromRoute] DateTimeOffset toTime)
         {
             _logger.LogInformation($"Получение свободного места на HDD у {agentId} c {fromTime} до {toTime}");
-
-            var metrics = _repository.GetByTimePeriod(fromTime.ToUnixTimeMilliseconds(), toTime.ToUnixTimeMilliseconds(), agentId);
-
-            var response = new HddGetMetricFromAgentResponse()
-            {
-                Metrics = new List<HddMetricResponse>()
-            };
-
-            foreach (var metric in metrics)
-            {
-                response.Metrics.Add(_mapper.Map<HddMetricResponse>(metric));
-            }
-            return Ok(response);
+       
+            return Ok();
         }
 
         /// <summary>

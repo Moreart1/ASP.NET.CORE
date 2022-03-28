@@ -40,19 +40,8 @@ namespace MetricsManager.Controllers
         public IActionResult GetMetricsFromAgent([FromRoute] int agentId, [FromRoute] DateTimeOffset fromTime, [FromRoute] DateTimeOffset toTime)
         {
             _logger.LogInformation($"Получение метрик за период: {fromTime}, {toTime} от {agentId}");
-
-            var metrics = _repository.GetByTimePeriod(fromTime.ToUnixTimeMilliseconds(), toTime.ToUnixTimeMilliseconds(), agentId);
-
-            var response = new NetworkGetMetricsFromAgentResponse()
-            {
-                Metrics = new List<NetworkMetricResponse>()
-            };
-
-            foreach (var metric in metrics)
-            {
-                response.Metrics.Add(_mapper.Map<NetworkMetricResponse>(metric));
-            }
-            return Ok(response);
+         
+            return Ok();
         }
 
         /// <summary>

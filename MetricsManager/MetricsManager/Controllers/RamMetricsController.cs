@@ -40,20 +40,9 @@ namespace MetricsManager.Controllers
         [HttpGet("agent/{agentId}/from/{fromTime}/to/{toTime}")]
         public IActionResult GetAvailableFromAgent([FromRoute] int agentId,[FromRoute] DateTimeOffset fromTime,[FromRoute] DateTimeOffset toTime)
         {
-            _logger.LogInformation($"Получение RAM от {fromTime} до {toTime} у {agentId}");
-
-            var metrics = _repository.GetByTimePeriod(fromTime.ToUnixTimeMilliseconds(), toTime.ToUnixTimeMilliseconds(), agentId);
-
-            var response = new RamGetMetricsFromAgentResponse()
-            {
-                Metrics = new List<RamMetricResponse>()
-            };
-
-            foreach (var metric in metrics)
-            {
-                response.Metrics.Add(_mapper.Map<RamMetricResponse>(metric));
-            }
-            return Ok(response);
+            _logger.LogInformation($"Получение RAM от {fromTime} до {toTime} у {agentId}");       
+            
+            return Ok();
         }
 
         /// <summary>

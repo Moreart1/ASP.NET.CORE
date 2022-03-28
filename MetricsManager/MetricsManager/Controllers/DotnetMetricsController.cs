@@ -39,19 +39,8 @@ namespace MetricsManager.Controllers
         public IActionResult GetErrorsCountFromAgent([FromRoute] int agentId, [FromRoute] DateTimeOffset fromTime, [FromRoute] DateTimeOffset toTime)
         {
             _logger.LogInformation($"Получение количества ошибок за период: {fromTime}, {toTime} от {agentId}");
-
-            var metrics = _repository.GetByTimePeriod(fromTime.ToUnixTimeMilliseconds(), toTime.ToUnixTimeMilliseconds(), agentId);
-
-            var response = new DotNetGetMetricsFromAgentResponse()
-            {
-                Metrics = new List<DotNetMetricResponse>()
-            };
-
-            foreach (var metric in metrics)
-            {
-                response.Metrics.Add(_mapper.Map<DotNetMetricResponse>(metric));
-            }
-            return Ok(response);
+        
+            return Ok();
         }
 
         /// <summary>
