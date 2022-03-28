@@ -11,11 +11,12 @@ using Polly;
 using Quartz;
 using Quartz.Impl;
 using Quartz.Spi;
+using System.Reflection;
 
 namespace MetricsManager
 {
     public class Startup
-    {      
+    {
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -29,8 +30,8 @@ namespace MetricsManager
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v2", new OpenApiInfo 
-                { 
+                c.SwaggerDoc("v1", new OpenApiInfo
+                {
                     Title = "MetricsManager",
                     Description = "Менеджер сбора метрик, который будет спрашивать у сервисов-агентов данные о собранных ими метриках.",
                     Contact = new OpenApiContact
@@ -38,7 +39,13 @@ namespace MetricsManager
                         Name = "Денисенко Марк",
                         Email = "Morearti1726263@yandex.ru"
                     },
-                    Version = "v2" });
+                    Version = "v1"
+                });
+
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";              
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                c.IncludeXmlComments(xmlPath);
+
             });
 
             var mapperConfiguration = new MapperConfiguration(mapper => mapper.AddProfile(new MapperProfile()));
@@ -64,13 +71,13 @@ namespace MetricsManager
             services.AddSingleton<IHddMetricsRepository, HddMetricsRepository>();
             services.AddSingleton<INetworkMetricsRepository, NetworkMetricsRepository>();
             services.AddSingleton<IRamMetricsRepository, RamMetricsRepository>();
-           
-            
+
+
             services.AddSingleton<IJobFactory, SingletonJobFactory>();
             services.AddSingleton<ISchedulerFactory, StdSchedulerFactory>();
 
             services.AddHostedService<QuartzHostedService>();
-           
+
             services.AddSingleton<CpuMetricJob>();
             services.AddSingleton<DotNetMetricJob>();
             services.AddSingleton<HddMetricJob>();
@@ -99,7 +106,7 @@ namespace MetricsManager
                 .AddTransientHttpErrorPolicy(p => p.WaitAndRetryAsync(3, _ => TimeSpan.FromMilliseconds(1000)));
         }
 
-       
+
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IMigrationRunner migrationRunner)
@@ -108,10 +115,10 @@ namespace MetricsManager
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v2/swagger.json", "MetricsManager v2"));
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "MetricsManager v1"));
             }
 
-            
+
 
             app.UseHttpsRedirection();
 

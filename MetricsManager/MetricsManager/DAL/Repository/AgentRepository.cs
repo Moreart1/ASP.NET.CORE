@@ -9,29 +9,18 @@ namespace MetricsManager.DAL.Repository
 {
     public class AgentsRepository : IAgentsRepository
     {
-        private readonly ILogger<AgentsRepository> _logger;
-        public AgentsRepository(ILogger<AgentsRepository> logger)
-        {
-            _logger = logger;
-        }
         public void Create(AgentInfo agent)
         {
             using (var connection = new SQLiteConnection(ConnectionManager.ConnectionString))
             {
-                var count = connection.ExecuteScalar<int>($"SELECT Count(*) FROM agents WHERE uri=@uri;", new { uri = agent.Url });
-                if (count > 0)
-                {
-                    throw new ArgumentException("Агент уже существует");
-                }
-                var result = connection.Execute(
-                $"INSERT INTO agents (uri,isenabled) VALUES (@uri,@isenabled);",
+                //connection.ExecuteScalar<int>($"SELECT Count(*) FROM agents WHERE uri=@uri;", new { uri = agent.Url });              
+                connection.Execute("INSERT INTO agents (uri,isenabled) VALUES (@uri,@isenabled);",              
                 new
-                {
+                {                   
                     uri = agent.Url,
                     isenabled = agent.IsEnabled
                 }
-                );
-                if (result <= 0) throw new InvalidOperationException("Не удалось добавить агента.");
+                );               
             }
         }
 
@@ -39,7 +28,7 @@ namespace MetricsManager.DAL.Repository
         {
             using (var connection = new SQLiteConnection(ConnectionManager.ConnectionString))
             {
-                return connection.Query<AgentInfo>($"SELECT * FROM agents").ToList();
+                return connection.Query<AgentInfo>("SELECT * FROM agents").ToList();
             }
         }
 
@@ -47,7 +36,7 @@ namespace MetricsManager.DAL.Repository
         {
             using (var connection = new SQLiteConnection(ConnectionManager.ConnectionString))
             {
-                return connection.QuerySingle<AgentInfo>($"SELECT * FROM agents WHERE id=@id",
+                return connection.QuerySingle<AgentInfo>("SELECT * FROM agents WHERE id=@id",
                     new { id });
             }
         }
@@ -56,12 +45,12 @@ namespace MetricsManager.DAL.Repository
         {
             using (var connection = new SQLiteConnection(ConnectionManager.ConnectionString))
             {
-                var count = connection.ExecuteScalar<int>($"SELECT Count(*) FROM agents WHERE uri=@uri;", new { uri = agent.Url });
+                var count = connection.ExecuteScalar<int>("SELECT Count(*) FROM agents WHERE uri=@uri;", new { uri = agent.Url });
                 if (count <= 0)
                 {
                     throw new ArgumentException("Агент не существует");
                 }
-                var result = connection.Execute($"UPDATE agents SET uri=@uri, isenabled=@isenabled where id=@id;",
+                var result = connection.Execute("UPDATE agents SET uri=@uri, isenabled=@isenabled where id=@id;",
                 new
                 {
                     uri = agent.Url,
