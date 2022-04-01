@@ -1,51 +1,42 @@
-﻿using MetricsManager.Controllers;
+﻿using AutoMapper;
+using MetricsManager.Controllers;
+using MetricsManager.DAL.Interface;
+using MetricsManager.Model;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
 using System;
+using System.Collections.Generic;
 using Xunit;
 
 namespace MetricsManagerTest
 {
     public class CpuControllerUnitTests
     {
-        private CpuMetricsController controller;
+        private readonly CpuMetricsController _controller;
 
-        private Mock<ILogger<CpuMetricsController>> mockLogger;
+        private readonly Mock<ICpuMetricsRepository> _mockRepository;
+
+        private readonly Mock<ILogger<CpuMetricsController>> _mockLogger;
+
+        private readonly Mock<IMapper> _mockMapper;
+
         public CpuControllerUnitTests()
         {
-            mockLogger = new Mock<ILogger<CpuMetricsController>>();
-            controller = new CpuMetricsController(mockLogger.Object);
-        }
-      
-
-        [Fact]
-        public void GetMetricsFromAllCluster_ReturnOk()
-        {
-            //Arrange
-            var fromTime = TimeSpan.FromSeconds(0);
-            var toTime = TimeSpan.FromSeconds(100);
-
-            //act
-            var result = controller.GetMetricsFromAllCluster(fromTime, toTime);
-
-            //Assert
-            _ = Assert.IsAssignableFrom<IActionResult>(result);
+            _mockRepository = new Mock<ICpuMetricsRepository>();
+            _mockLogger = new Mock<ILogger<CpuMetricsController>>();
+            _mockMapper = new Mock<IMapper>();
+            _controller = new CpuMetricsController(_mockLogger.Object, _mockRepository.Object, _mockMapper.Object);
         }
 
         [Fact]
-        public void GetMetricsFromAgent_ReturnsOk()
+        public void GetByTimePeriod_ShouldCall_GetByTimePeriod_From_Repository()
         {
-            //Arrange
-            var agentId = 1;
-            var fromTime = TimeSpan.FromSeconds(0);
-            var toTime = TimeSpan.FromSeconds(100);
-
-            //act
-            var result = controller.GetMetricsFromAgent(agentId, fromTime, toTime);
-
-            //Assert
-            _ = Assert.IsAssignableFrom<IActionResult>(result);
+            _mockRepository.Setup(repository => repository.GetByTimePeriod(It.IsAny<long>(), It.IsAny<long>())).Returns(new List<CpuMetric>());
+            var result = _controller.GetMetricsFromAllCluster(DateTimeOffset.UtcNow, DateTimeOffset.UtcNow);
+            _mockRepository.Verify(repository => repository.GetByTimePeriod(It.IsAny<long>(), It.IsAny<long>()), Times.AtMostOnce());
         }
+
+
     }
 }

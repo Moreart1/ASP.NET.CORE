@@ -1,6 +1,5 @@
 ﻿namespace MetricsAgent.Interface
 {
-
     public interface IRepository<T> where T : class
     {
         IList<T> GetByTimePeriod(long fromTime, long toTime);

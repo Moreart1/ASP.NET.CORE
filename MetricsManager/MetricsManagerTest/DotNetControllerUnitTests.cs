@@ -1,4 +1,7 @@
-﻿using MetricsManager.Controllers;
+﻿using AutoMapper;
+using MetricsManager.Controllers;
+using MetricsManager.DAL.Interface;
+using MetricsManager.Model;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -13,43 +16,28 @@ namespace MetricsManagerTest
 {
     public class DotNetControllerUnitTests
     {
-        private DotNetMetricsController controller;
+        private readonly DotNetMetricsController _controller;
 
-        private Mock<ILogger<DotNetMetricsController>> mockLogger;
+        private readonly Mock<IDotNetMetricsRepository> _mockRepository;
+
+        private readonly Mock<ILogger<DotNetMetricsController>> _mockLogger;
+
+        private readonly Mock<IMapper> _mockMapper;
 
         public DotNetControllerUnitTests()
         {
-            mockLogger = new Mock<ILogger<DotNetMetricsController>>();
-            controller = new DotNetMetricsController(mockLogger.Object);
+            _mockLogger = new Mock<ILogger<DotNetMetricsController>>();
+            _mockRepository = new Mock<IDotNetMetricsRepository>();
+            _mockMapper = new Mock<IMapper>();
+            _controller = new DotNetMetricsController(_mockLogger.Object, _mockRepository.Object, _mockMapper.Object);
         }
 
         [Fact]
-        public void ErrorsCount_ReturnOk()
+        public void GetByTimePeriod_ShouldCall_GetByTimePeriod_From_Repository()
         {
-            //Arrange
-            var agentId = 1;
-            var fromTime = TimeSpan.FromSeconds(0);
-            var toTime = TimeSpan.FromSeconds(100);
-
-            //act
-            var result = controller.ErrorsCount(agentId,fromTime, toTime);
-
-            //Assert
-            _ = Assert.IsAssignableFrom<IActionResult>(result);
+            _mockRepository.Setup(repository => repository.GetByTimePeriod(It.IsAny<long>(), It.IsAny<long>())).Returns(new List<DotNetMetric>());
+            var result = _controller.GetErrorsCountFromAllCluster(DateTimeOffset.UtcNow, DateTimeOffset.UtcNow);
+            _mockRepository.Verify(repository => repository.GetByTimePeriod(It.IsAny<long>(), It.IsAny<long>()), Times.AtMostOnce());
         }
-
-        [Fact]
-        public void GetMetricsFromAllCluster_ReturnOk()
-        {
-            //Arrange
-            var fromTime = TimeSpan.FromSeconds(0);
-            var toTime = TimeSpan.FromSeconds(100);
-
-            //act
-            var result = controller.GetMetricsFromAllCluster(fromTime, toTime);
-
-            //Assert
-            _ = Assert.IsAssignableFrom<IActionResult>(result);
-        }             
     }
 }

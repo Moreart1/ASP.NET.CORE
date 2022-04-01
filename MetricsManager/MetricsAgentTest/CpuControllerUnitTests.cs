@@ -19,7 +19,7 @@ namespace MetricsAgentTest
         private readonly Mock<ILogger<CpuMetricsController>> _mockLogger;
 
         private readonly Mock<IMapper> _mockMapper;
-
+        
         public CpuControllerUnitTests()
         {
             _mockRepository = new Mock<ICpuMetricsRepository>();
