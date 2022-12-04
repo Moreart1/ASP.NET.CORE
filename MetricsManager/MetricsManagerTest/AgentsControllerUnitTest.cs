@@ -25,7 +25,7 @@ namespace MetricsManagerTest
             _mockRepository = new Mock<IAgentsRepository>();
             _mockLogger = new Mock<ILogger<AgentsController>>();
             _mockMapper = new Mock<IMapper>();
-            _controller = new AgentsController(_mockLogger.Object, _mockRepository.Object, _mockMapper.Object);
+            //_controller = new AgentsController(_mockLogger.Object, _mockRepository.Object, _mockMapper.Object);
         }
 
         [Fact]
