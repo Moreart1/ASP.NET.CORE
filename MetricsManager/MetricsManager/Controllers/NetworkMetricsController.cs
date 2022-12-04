@@ -1,50 +1,64 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
+using MetricsManager.DAL.Interface;
+using MetricsManager.Response.Responses;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+
 
 namespace MetricsManager.Controllers
 {
-    [Route("api/metrics/network/")]
+
+    [Route("api/metrics/network")]
     [ApiController]
     public class NetworkMetricsController : ControllerBase
     {
         private readonly ILogger<NetworkMetricsController> _logger;
+        private readonly INetworkMetricsRepository _repository;
+        private readonly IMapper _mapper;
 
-        public NetworkMetricsController(ILogger<NetworkMetricsController> logger)
+        public NetworkMetricsController(ILogger<NetworkMetricsController> logger,INetworkMetricsRepository repository,IMapper mapper)
         {
             _logger = logger;
-            _logger.LogDebug(1, "NLog встроен в CpuMetricsController");
+            _repository = repository;
+            _mapper = mapper;
         }
 
         [HttpGet("agent/{agentId}/from/{fromTime}/to/{toTime}")]
-        public IActionResult GetMetricsFromAgent
-            (
-            [FromRoute] int agentId,
-            [FromRoute] TimeSpan fromTime,
-            [FromRoute] TimeSpan toTime
-            )
+        public IActionResult GetMetricsFromAgent([FromRoute] int agentId, [FromRoute] DateTimeOffset fromTime, [FromRoute] DateTimeOffset toTime)
         {
-            _logger.LogInformation($"Получение метрик за период: {fromTime}, \t {toTime} от {agentId}",
-                fromTime.ToString(),
-                toTime.ToString(),
-                agentId);
-            return Ok();
+            _logger.LogInformation($"Получение метрик за период: {fromTime}, {toTime} от {agentId}");
+
+            var metrics = _repository.GetByTimePeriod(fromTime.ToUnixTimeMilliseconds(), toTime.ToUnixTimeMilliseconds(), agentId);
+
+            var response = new NetworkGetMetricsFromAgentResponse()
+            {
+                Metrics = new List<NetworkMetricResponse>()
+            };
+
+            foreach (var metric in metrics)
+            {
+                response.Metrics.Add(_mapper.Map<NetworkMetricResponse>(metric));
+            }
+            return Ok(response);
         }
 
+
         [HttpGet("cluster/from/{fromTime}/to/{toTime}")]
-        public IActionResult GetMetricsFromAllCluster
-            (
-            [FromRoute] TimeSpan fromTime,
-            [FromRoute] TimeSpan toTime
-            )
+        public IActionResult GetMetricsFromAllCluster([FromRoute] DateTimeOffset fromTime, [FromRoute] DateTimeOffset toTime)
         {
-            _logger.LogInformation($"Получение метрик за период: {fromTime}, \t {toTime}",
-                fromTime.ToString(),
-                toTime.ToString());
-            return Ok();
+            _logger.LogInformation($"Получение метрик за период: {fromTime}, {toTime}");
+
+            var metrics = _repository.GetByTimePeriod(fromTime.ToUnixTimeMilliseconds(), toTime.ToUnixTimeMilliseconds());
+
+            var response = new NetworkGetMetricsFromAllClusterResponse()
+            {
+                Metrics = new List<NetworkMetricResponse>()
+            };
+
+            foreach (var metric in metrics)
+            {
+                response.Metrics.Add(_mapper.Map<NetworkMetricResponse>(metric));
+            }
+            return Ok(response);
         }
     }
 }
