@@ -49,16 +49,16 @@ namespace MetricsManager.DAL.Repository
             }
         }
 
-        public IList<CpuMetric> GetByTimePeriod(long fromTime, long toTime, int agentId)
+        public IList<CpuMetric> GetByTimePeriod(DateTimeOffset fromTime, DateTimeOffset toTime, int agentId)
         {
             using (var connection = new SQLiteConnection(ConnectionManager.ConnectionString))
             {
-                return connection.Query<CpuMetric>("SELECT Id, Value, Time, agentId FROM cpumetrics WHERE (agentId = @agentId) time BETWEEN @fromTime AND @toTime",
+                return connection.Query<CpuMetric>(" SELECT * FROM cpumetrics WHERE AgentId = @agentId AND time BETWEEN @fromTime AND @toTime",
                 new
                 {
                     agentId = agentId,
-                    fromTime = fromTime,
-                    toTime = toTime
+                    fromTime = fromTime.ToUnixTimeMilliseconds(),
+                    toTime = toTime.ToUnixTimeMilliseconds()
                 }).ToList();
             }
         }

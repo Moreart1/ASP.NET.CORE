@@ -28,7 +28,6 @@ namespace MetricsManager.DAL.Repository
         {
             using (var connection = new SQLiteConnection(ConnectionManager.ConnectionString))
             {
-
                 var result = connection.ExecuteScalar<long>("SELECT Max(time) FROM hddmetrics WHERE agentId = @agentId",
 
                  new { agentId });
@@ -51,7 +50,7 @@ namespace MetricsManager.DAL.Repository
             }
         }
 
-        public IList<HddMetric> GetByTimePeriod(long fromTime, long toTime, int agentId)
+        public IList<HddMetric> GetByTimePeriod(DateTimeOffset fromTime, DateTimeOffset toTime, int agentId)
         {
             using (var connection = new SQLiteConnection(ConnectionManager.ConnectionString))
             {
@@ -59,8 +58,8 @@ namespace MetricsManager.DAL.Repository
                    new
                    {
                        agentId = agentId,
-                       fromTime = fromTime,
-                       toTime = toTime
+                       fromTime = fromTime.ToUnixTimeMilliseconds(),
+                       toTime = toTime.ToUnixTimeMilliseconds()
                    }).ToList();
             }
         }

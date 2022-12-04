@@ -50,7 +50,7 @@ namespace MetricsManager.DAL.Repository
             }
         }
 
-        public IList<RamMetric> GetByTimePeriod(long fromTime, long toTime, int agentId)
+        public IList<RamMetric> GetByTimePeriod(DateTimeOffset fromTime, DateTimeOffset toTime, int agentId)
         {
             using (var connection = new SQLiteConnection(ConnectionManager.ConnectionString))
             {
@@ -58,8 +58,8 @@ namespace MetricsManager.DAL.Repository
                             new
                             {
                                 agentId = agentId,
-                                fromTime = fromTime,
-                                toTime = toTime
+                                fromTime = fromTime.ToUnixTimeMilliseconds(),
+                                toTime = toTime.ToUnixTimeMilliseconds()
                             }).ToList();
             }
         }
